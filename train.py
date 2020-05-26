@@ -23,10 +23,9 @@ import torch_xla.core.xla_model as xm
 import torch_xla.distributed.parallel_loader as pl
 import torch_xla.distributed.xla_multiprocessing as xmp
 
-def main():
+def main(args):
     device = xm.xla_device()
 
-    args = cfg.parse_args()
     gen_net = Generator(args).to(device)
     dis_net = Discriminator(args).to(device)
     enc_net = Encoder(args).to(device)
@@ -145,4 +144,6 @@ def main():
         
     
 if __name__ == '__main__':
-    xmp.spawn(main, args=())
+    arg = cfg.parse_args()
+
+    xmp.spawn(main, args=(arg,), nprocs=8)
