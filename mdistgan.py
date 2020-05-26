@@ -17,6 +17,7 @@ from pytorch_lightning.core import LightningModule
 from pytorch_lightning.trainer import Trainer
 from pytorch_fid.fid_score import calculate_fid_given_paths
 from torchvision.utils import save_image
+import torch_xla.core.xla_model as xm
 
 
 def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples):
@@ -48,7 +49,7 @@ class GAN(LightningModule):
         self.gen_net = Generator(self.hparams)
         self.dis_net = Discriminator(self.hparams)
         self.enc_net = Encoder(self.hparams)
-        
+        self.device = xm.xla_device()
         # cache for generated images
         self.generated_imgs = None
         self.last_imgs = None
@@ -59,10 +60,7 @@ class GAN(LightningModule):
     def training_step(self, batch, batch_idx, optimizer_idx):
         imgs, _ = batch
         dtype = imgs.type()
-        print('*** End stack trice ***')
-        print(dtype)
-        print('*** End stack trice ***')
-        z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim)))).type(dtype)
+        z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim)))).to(self.device)
         real_imgs = imgs
 
         # train generator
