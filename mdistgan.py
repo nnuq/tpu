@@ -21,11 +21,11 @@ from torchvision.utils import save_image
 
 def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples):
         
-    alpha = torch.cuda.FloatTensor(np.random.random((real_samples.size(0), 1, 1, 1)))
+    alpha = torch.FloatTensor(np.random.random((real_samples.size(0), 1, 1, 1)))
     # Get random interpolation between real and fake samples
     interpolates = (alpha * real_samples + ((1 - alpha) * fake_samples)).requires_grad_(True)
     d_interpolates = dis_net(interpolates, 'out')
-    fake = Variable(torch.cuda.FloatTensor(real_samples.shape[0], 1).fill_(1.0), requires_grad=False)
+    fake = Variable(torch.FloatTensor(real_samples.shape[0], 1).fill_(1.0), requires_grad=False)
     # Get gradient w.r.t. interpolates
     gradients = autograd.grad(
         outputs=d_interpolates,
@@ -45,9 +45,9 @@ class GAN(LightningModule):
     def __init__(self, hparams):
         super().__init__()
         self.hparams = hparams
-        self.gen_net = Generator(self.hparams).cuda()
-        self.dis_net = Discriminator(self.hparams).cuda()
-        self.enc_net = Encoder(self.hparams).cuda()
+        self.gen_net = Generator(self.hparams)
+        self.dis_net = Discriminator(self.hparams)
+        self.enc_net = Encoder(self.hparams)
         
         # cache for generated images
         self.generated_imgs = None
@@ -59,8 +59,8 @@ class GAN(LightningModule):
     def training_step(self, batch, batch_idx, optimizer_idx):
         imgs, _ = batch
         
-        z = torch.cuda.FloatTensor(np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim)))
-        real_imgs = imgs.type(torch.cuda.FloatTensor)
+        z = torch.FloatTensor(np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim)))
+        real_imgs = imgs.type(torch.FloatTensor)
 
         # train generator
         if optimizer_idx == 0:
@@ -195,9 +195,9 @@ class GAN(LightningModule):
     def validation_step(self, batch, batch_idx):
         real_imgs, _ = batch
         
-        z = torch.cuda.FloatTensor(np.random.uniform(-1, 1, (real_imgs.shape[0], self.hparams.latent_dim)))
+        z = torch.FloatTensor(np.random.uniform(-1, 1, (real_imgs.shape[0], self.hparams.latent_dim)))
         gen_imgs = self.gen_net(z)
-        z_enc = self.enc_net(real_imgs.cuda())
+        z_enc = self.enc_net(real_imgs)
         recon_imgs = self.gen_net(z_enc)
         
         for img_idx, img in enumerate(gen_imgs):
@@ -278,7 +278,7 @@ def main(hparams):
     # ------------------------
     # 2 INIT TRAINER
     # ------------------------
-    trainer = Trainer(callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
+    trainer = Trainer(gpus=1, callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
     
     # ------------------------
     # 3 START TRAINING
