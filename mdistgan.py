@@ -239,7 +239,7 @@ class GAN(LightningModule):
          
     def val_dataloader(self):
         transform = transforms.Compose([transforms.ToTensor()])
-        dataset = CIFAR10(os.getcwd(), train=False, transform=transform)
+        dataset = CIFAR10(os.getcwd(), train=False, download=True, transform=transform)
         return DataLoader(dataset, batch_size=self.hparams.eval_batch_size)    
 
 
