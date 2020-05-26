@@ -1,0 +1,22 @@
+python train.py \
+-train_bs 64 \
+--dataset cifar10 \
+--bottom_width 4 \
+--img_size 32 \
+--num_iter 300000 \
+--latent_dim 128 \
+--gf_dim 256 \
+--df_dim 128 \
+--ef_dim 256 \
+--g_lr 0.0001 \
+--d_lr 0.0001 \
+--ae_recon_lr 0.0001 \
+--ae_reg_lr 0.0001 \
+--lambda_d 0.5 \
+--lambda_g 0.1 \
+--beta1 0.0 \
+--beta2 0.9 \
+--init_type xavier_uniform \
+--val_freq 3 \
+--num_workers 8 \
+--exp_name mdistgan 
