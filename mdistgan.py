@@ -41,6 +41,9 @@ def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples):
     return grad_penalty 
 
 
+device = xm.xla_device()
+
+
 class GAN(LightningModule):
     
     def __init__(self, hparams):
@@ -49,7 +52,6 @@ class GAN(LightningModule):
         self.gen_net = Generator(self.hparams)
         self.dis_net = Discriminator(self.hparams)
         self.enc_net = Encoder(self.hparams)
-        self.device = xm.xla_device()
         # cache for generated images
         self.generated_imgs = None
         self.last_imgs = None
@@ -61,7 +63,7 @@ class GAN(LightningModule):
         imgs, _ = batch
         dtype = imgs.type()
         z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim))))
-        z = z.to(self.device)
+        z = z.to(device)
         real_imgs = imgs
 
         # train generator
