@@ -63,7 +63,6 @@ def main(index, args):
     valid_loader = dataset.valid
     para_loader = pl.ParallelLoader(train_loader, [device])
 
-
     fid_stat = str(pathlib.Path(__file__).parent.absolute()) + '/fid_stat/fid_stat_cifar10_test.npz'
     if not os.path.exists(fid_stat):
          download_stat_cifar10_test()
