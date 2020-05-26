@@ -22,11 +22,11 @@ import torch_xla.core.xla_model as xm
 
 def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples):
         
-    alpha = torch.FloatTensor(np.random.random((real_samples.size(0), 1, 1, 1)))
+    alpha = torch.FloatTensor(np.random.random((real_samples.size(0), 1, 1, 1))).to(device_)
     # Get random interpolation between real and fake samples
     interpolates = (alpha * real_samples + ((1 - alpha) * fake_samples)).requires_grad_(True)
-    d_interpolates = dis_net(interpolates, 'out')
-    fake = torch.FloatTensor(real_samples.shape[0], 1).fill_(1.0) 
+    d_interpolates = dis_net(interpolates, 'out').to(device_)
+    fake = torch.FloatTensor(real_samples.shape[0], 1).fill_(1.0).to(device_) 
     fake.requires_grad=False
     # Get gradient w.r.t. interpolates
     gradients = autograd.grad(
