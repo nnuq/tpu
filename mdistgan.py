@@ -230,17 +230,20 @@ class GAN(LightningModule):
         os.system('rm -r {}'.format(os.getcwd() + '/fid_buffer_real'))
 
         return results
+
+    def prepare_data(self):
+        transform = transforms.Compose([transforms.ToTensor()])
+        self.train_dataset = CIFAR10(os.getcwd(), train=True, download=True, transform=transform)
+        self.valid_dataset = CIFAR10(os.getcwd(), train=False, download=True, transform=transform)    
         
     def train_dataloader(self):
-        transform = transforms.Compose([transforms.ToTensor()])
-        dataset = CIFAR10(os.getcwd(), train=True, download=True, transform=transform)
-        return DataLoader(dataset, batch_size=self.hparams.train_batch_size)
+        loader = DataLoader(self.train_dataset, batch_size=self.hparams.train_batch_size)
+        return loader
 
          
     def val_dataloader(self):
-        transform = transforms.Compose([transforms.ToTensor()])
-        dataset = CIFAR10(os.getcwd(), train=False, download=True, transform=transform)
-        return DataLoader(dataset, batch_size=self.hparams.eval_batch_size)    
+        loader = DataLoader(self.valid_dataset, batch_size=self.hparams.train_batch_size)
+        return loader  
 
 
 import pytorch_lightning as pl
