@@ -56,6 +56,7 @@ class Generator(nn.Module):
 
     def forward(self, z):
         h = z
+        print(type(z))
         h = self.l1(h).view(-1, self.ch, self.bottom_width, self.bottom_width)
         h = self.block2(h)
         h = self.block3(h)
