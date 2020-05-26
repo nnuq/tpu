@@ -23,7 +23,7 @@ import torch_xla.core.xla_model as xm
 import torch_xla.distributed.parallel_loader as pl
 import torch_xla.distributed.xla_multiprocessing as xmp
 
-def main(args):
+def main(index, args):
     device = xm.xla_device()
 
     gen_net = Generator(args).to(device)
