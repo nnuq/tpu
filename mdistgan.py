@@ -64,8 +64,8 @@ class GAN(LightningModule):
         dtype = imgs.type()
         z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim))))
         z = z.to(device)
-        real_imgs = imgs
-
+        real_imgs = imgs.to(device)
+         
         # train generator
         if optimizer_idx == 0:
             # sample noise
@@ -199,7 +199,12 @@ class GAN(LightningModule):
     def validation_step(self, batch, batch_idx):
         real_imgs, _ = batch
         
-        z = torch.FloatTensor(np.random.uniform(-1, 1, (real_imgs.shape[0], self.hparams.latent_dim)))
+        dtype = real_imgs.type()
+        z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim))))
+        z = z.to(device)
+        real_imgs = real_imgs.to(device)
+
+
         gen_imgs = self.gen_net(z)
         z_enc = self.enc_net(real_imgs)
         recon_imgs = self.gen_net(z_enc)
