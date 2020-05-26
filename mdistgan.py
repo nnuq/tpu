@@ -195,7 +195,7 @@ class GAN(LightningModule):
                                         lr, (b1, b2)) 
         return [ae_recon_opt, ae_reg_opt, dis_opt, gen_opt], []
 
-    def validation_step(self, batch, batch_idx):
+    """def validation_step(self, batch, batch_idx):
         real_imgs, _ = batch
         
         z = torch.from_numpy((np.random.uniform(-1, 1, (real_imgs.shape[0], self.hparams.latent_dim))))
@@ -217,9 +217,9 @@ class GAN(LightningModule):
          
         for img_idx, img in enumerate(real_imgs):
             file_name = os.path.join(os.getcwd() + '/fid_buffer_real', f'iter{batch_idx}_b{img_idx}.png')
-            save_image(img, file_name, normalize=True) 
+            save_image(img, file_name, normalize=True) """
         
-    def validation_epoch_end(self, outputs):     
+    """def validation_epoch_end(self, outputs):     
         fid_score_gen = calculate_fid_given_paths([os.getcwd() + '/fid_buffer_gen', os.getcwd() + '/fid_buffer_real'], 200) 
         fid_score_ae = calculate_fid_given_paths([os.getcwd() + '/fid_buffer_recon', os.getcwd() + '/fid_buffer_real'], 200)
         
@@ -236,7 +236,7 @@ class GAN(LightningModule):
         os.system('rm -r {}'.format(os.getcwd() + '/fid_buffer_recon'))
         os.system('rm -r {}'.format(os.getcwd() + '/fid_buffer_real'))
 
-        return results
+        return results"""
 
     def prepare_data(self):
         transform = transforms.Compose([transforms.ToTensor()])
@@ -248,9 +248,9 @@ class GAN(LightningModule):
         return loader
 
          
-    def val_dataloader(self):
+    """def val_dataloader(self):
         loader = DataLoader(self.valid_dataset, batch_size=self.hparams.train_batch_size)
-        return loader  
+        return loader  """
 
 
 import pytorch_lightning as pl
@@ -288,7 +288,7 @@ def main(hparams):
     # ------------------------
     # 2 INIT TRAINER
     # ------------------------
-    trainer = Trainer(num_tpu_cores=1, callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
+    trainer = Trainer(num_tpu_cores=8, num_sanity_val_steps=0, callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
     
     # ------------------------
     # 3 START TRAINING
