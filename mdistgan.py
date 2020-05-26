@@ -288,7 +288,7 @@ def main(hparams):
     # ------------------------
     # 2 INIT TRAINER
     # ------------------------
-    trainer = Trainer(num_tpu_cores=1, num_sanity_val_steps=0, callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
+    trainer = Trainer(num_tpu_cores=8, num_sanity_val_steps=0, callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
     
     # ------------------------
     # 3 START TRAINING
@@ -307,7 +307,7 @@ if __name__ == '__main__':
         '-train_bs',
         '--train_batch_size',
         type=int,
-        default=8,
+        default=64,
         help='size of the batches')
     parser.add_argument(
         '--lr',
