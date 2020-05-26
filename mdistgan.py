@@ -288,7 +288,7 @@ def main(hparams):
     # ------------------------
     # 2 INIT TRAINER
     # ------------------------
-    trainer = Trainer(num_tpu_cores=8, num_sanity_val_steps=0, callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
+    trainer = Trainer(num_tpu_cores=1, num_sanity_val_steps=0, callbacks=[MyPrintingCallback()], check_val_every_n_epoch=1)
     
     # ------------------------
     # 3 START TRAINING
