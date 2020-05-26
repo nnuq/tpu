@@ -60,7 +60,8 @@ class GAN(LightningModule):
     def training_step(self, batch, batch_idx, optimizer_idx):
         imgs, _ = batch
         dtype = imgs.type()
-        z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim)))).to(self.device)
+        z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim))))
+        z = z.to(self.device)
         real_imgs = imgs
 
         # train generator
