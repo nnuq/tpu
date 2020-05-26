@@ -58,9 +58,9 @@ class GAN(LightningModule):
 
     def training_step(self, batch, batch_idx, optimizer_idx):
         imgs, _ = batch
-        
-        z = torch.FloatTensor(np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim)))
-        real_imgs = imgs.type(torch.FloatTensor)
+        dtype = imgs.type()
+        z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim)))).type(dtype)
+        real_imgs = imgs
 
         # train generator
         if optimizer_idx == 0:
