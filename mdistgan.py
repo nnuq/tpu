@@ -308,7 +308,7 @@ if __name__ == '__main__':
         '-train_bs',
         '--train_batch_size',
         type=int,
-        default=64,
+        default=8,
         help='size of the batches')
     parser.add_argument(
         '--lr',
