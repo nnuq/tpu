@@ -213,8 +213,8 @@ class GAN(LightningModule):
             save_image(img, file_name, normalize=True) 
         
     def validation_epoch_end(self, outputs):     
-        fid_score_gen = calculate_fid_given_paths([os.getcwd() + '/fid_buffer_gen', os.getcwd() + '/fid_buffer_real']) 
-        fid_score_ae = calculate_fid_given_paths([os.getcwd() + '/fid_buffer_recon', os.getcwd() + '/fid_buffer_real'])
+        fid_score_gen = calculate_fid_given_paths([os.getcwd() + '/fid_buffer_gen', os.getcwd() + '/fid_buffer_real'], 200) 
+        fid_score_ae = calculate_fid_given_paths([os.getcwd() + '/fid_buffer_recon', os.getcwd() + '/fid_buffer_real'], 200)
         
         tqdm_dict = {'fid_score_gen': fid_score_gen.item(),
                      'fid_score_ae': fid_score_ae.item()}
