@@ -198,7 +198,7 @@ class GAN(LightningModule):
     def validation_step(self, batch, batch_idx):
         real_imgs, _ = batch
         
-        z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim))))
+        z = torch.from_numpy((np.random.uniform(-1, 1, (real_imgs.shape[0], self.hparams.latent_dim))))
         z = z.to(device)
         real_imgs = real_imgs.to(device)
 
