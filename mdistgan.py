@@ -20,7 +20,7 @@ from torchvision.utils import save_image
 import torch_xla.core.xla_model as xm
 
 
-def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples):
+def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples, device_):
         
     alpha = torch.FloatTensor(np.random.random((real_samples.size(0), 1, 1, 1))).to(device_)
     # Get random interpolation between real and fake samples
@@ -42,8 +42,6 @@ def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples):
     return grad_penalty 
 
 
-device_ = xm.xla_device()
-
 
 class GAN(LightningModule):
     
@@ -62,6 +60,7 @@ class GAN(LightningModule):
 
     def training_step(self, batch, batch_idx, optimizer_idx):
         imgs, _ = batch
+        device_ = xm.xla_device()
         z = torch.from_numpy((np.random.uniform(-1, 1, (imgs.shape[0], self.hparams.latent_dim))))
         z = z.to(device_)
         real_imgs = imgs.to(device_)
@@ -131,7 +130,7 @@ class GAN(LightningModule):
             
             #d_acc = torch.sum(binary_cross_entropy_with_logits(mixe_cls, larg_mix))
             
-            grad_penalty = calculate_gradient_penalty(self.dis_net, real_imgs, generate_imgs)
+            grad_penalty = calculate_gradient_penalty(self.dis_net, real_imgs, generate_imgs, device_)
             
             l_1 = torch.mean(nn.ReLU()(1 - disc_real_logit))
             l_2 = torch.mean(nn.ReLU()(1 - disc_recon_logit))
