@@ -69,10 +69,10 @@ class GAN(LightningModule):
             z_enc = self.enc_net(real_imgs)
             
             with torch.no_grad():
-                feature_real = self.dis_net(real_imgs ,1)
+                feature_real = self.dis_net(real_imgs ,'feat')
             
             reconstructed_imgs = self.gen_net(z_enc)
-            feature_recon = self.dis_net(reconstructed_imgs, 1)
+            feature_recon = self.dis_net(reconstructed_imgs,'feat')
             ae_loss    = torch.mean((feature_real - feature_recon) ** 2)
         
             tqdm_dict = {'ae_loss': ae_loss}
@@ -89,12 +89,12 @@ class GAN(LightningModule):
             z_enc = self.enc_net(real_imgs)
             
             with torch.no_grad():
-                feature_real = self.dis_net(real_imgs ,1)
+                feature_real = self.dis_net(real_imgs ,'feat')
             
             reconstructed_imgs = self.gen_net(z_enc)
-            feature_recon = self.dis_net(reconstructed_imgs, 1)
+            feature_recon = self.dis_net(reconstructed_imgs,'feat')
             generate_imgs = self.gen_net(z)
-            feature_fake = self.dis_net(generate_imgs, 1)
+            feature_fake = self.dis_net(generate_imgs,'feat')
             
             lambda_w  = np.sqrt(self.hparams.latent_dim * 1.0/feature_recon.size()[1])
             md_x       = torch.mean(feature_recon - feature_fake)
@@ -120,10 +120,10 @@ class GAN(LightningModule):
             
             #images_mix, larg_mix, _ = argument_image_rotation_and_fake_mix(real_imgs, generate_imgs)    
             
-            disc_real_logit = self.dis_net(real_imgs, 0)
-            disc_fake_logit = self.dis_net(generate_imgs, 0)
-            disc_recon_logit = self.dis_net(reconstructed_imgs, 0)
-            #mixe_cls = self.dis_net(images_mix, 2)
+            disc_real_logit = self.dis_net(real_imgs, 'out')
+            disc_fake_logit = self.dis_net(generate_imgs, 'out')
+            disc_recon_logit = self.dis_net(reconstructed_imgs, 'out')
+            #mixe_cls = self.dis_net(images_mix, 'cls')
             
             #d_acc = torch.sum(binary_cross_entropy_with_logits(mixe_cls, larg_mix))
             
@@ -158,11 +158,11 @@ class GAN(LightningModule):
             #Xarg_f, larg_f, _ = argument_image_rotation_and_fake(generate_imgs, ridx=ridx)
 
             with torch.no_grad():
-                disc_real_logit = self.dis_net(real_imgs, 0)
+                disc_real_logit = self.dis_net(real_imgs, 'out')
                 #real_cls = self.dis_net(Xarg, 2)
                 #g_real_acc = torch.sum(binary_cross_entropy_with_logits(real_cls, larg))
             
-            disc_fake_logit = self.dis_net(generate_imgs, 0)
+            disc_fake_logit = self.dis_net(generate_imgs, 'out')
             #fake_cls = self.dis_net(Xarg_f, 2)
             #g_fake_acc = torch.sum(binary_cross_entropy_with_logits(fake_cls, larg_f))       
             
