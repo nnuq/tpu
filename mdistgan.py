@@ -26,7 +26,8 @@ def calculate_gradient_penalty(dis_net: nn.Module, real_samples, fake_samples):
     # Get random interpolation between real and fake samples
     interpolates = (alpha * real_samples + ((1 - alpha) * fake_samples)).requires_grad_(True)
     d_interpolates = dis_net(interpolates, 'out')
-    fake = Variable(torch.FloatTensor(real_samples.shape[0], 1).fill_(1.0), requires_grad=False)
+    fake = torch.FloatTensor(real_samples.shape[0], 1).fill_(1.0) 
+    fake.requires_grad=False
     # Get gradient w.r.t. interpolates
     gradients = autograd.grad(
         outputs=d_interpolates,
